@@ -1,31 +1,31 @@
 /**
-@license MIT
-Copyright 2021 David "F0rce" Dodlek
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ @license MIT
+ Copyright 2021 David "F0rce" Dodlek
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
-import { LitElement, html, css } from "lit-element";
+import {css, html, LitElement} from "lit-element";
 import Cropper from "cropperjs";
 
 class LitCropper extends LitElement {
-  static get properties() {
-    return {
-      cropperSettings: { type: String },
-      imgSrc: { type: String },
-      mimeType: { type: String },
-      encoderQuality: { type: Number },
-    };
-  }
+    static get properties() {
+        return {
+            cropperSettings: {type: String},
+            imgSrc: {type: String},
+            mimeType: {type: String},
+            encoderQuality: {type: Number},
+        };
+    }
 
-  constructor() {
-    super();
-    this.encoderQuality = 0.85;
-  }
+    constructor() {
+        super();
+        this.encoderQuality = 0.85;
+    }
 
-  static get styles() {
-    return css`
+    static get styles() {
+        return css`
       /*!
  * Cropper.js v1.5.11
  * https://fengyuanchen.github.io/cropperjs
@@ -355,163 +355,167 @@ class LitCropper extends LitElement {
         border-radius: 50%;
       }
     `;
-  }
-
-  render() {
-    return html`<div id="img-container" style="height: 100%; width: 100%">
-      <img id="image" />
-    </div>`;
-  }
-
-  async firstUpdated(changedProperties) {
-    this.imageContainer = this.shadowRoot.getElementById("img-container");
-    this.currentImage = this.shadowRoot.getElementById("image");
-
-    const settings = await this.validateSettings();
-    this.settings = settings;
-
-    this.initializeCropper();
-  }
-
-  validateSettings() {
-    return new Promise((resolve, reject) => {
-      let parsed;
-      try {
-        const json = JSON.parse(this.cropperSettings);
-        parsed = json;
-      } catch (error) {
-        console.error(error);
-        reject("JSON parse failed.");
-      }
-
-      if (parsed.initialAspectRatio === 0) {
-        parsed.initialAspectRatio = NaN;
-      }
-      if (parsed.aspectRatio === 0) {
-        parsed.aspectRatio = NaN;
-      }
-
-      resolve(parsed);
-    });
-  }
-
-  initializeCropper() {
-    if (this.settings.roundCropBox === true) {
-      this.imageContainer.classList.add("roundCropBox");
     }
 
-    this.currentImage.src = `data:${this.mimeType};base64,` + this.imgSrc;
+    render() {
+        return html`
+            <div id="img-container" style="height: 100%; width: 100%">
+                <img id="image"/>
+            </div>`;
+    }
 
-    let _this = this;
-    this.cropper = new Cropper(this.currentImage, {
-      viewMode: this.settings.viewMode,
-      dragMode: this.settings.dragMode,
-      initialAspectRatio: this.settings.initialAspectRatio,
-      aspectRatio: this.settings.aspectRatio,
-      responsive: this.settings.responsive,
-      restore: this.settings.restore,
-      checkCrossOrigin: this.settings.checkCrossOrigin,
-      checkOrientation: this.settings.checkOrientation,
-      modal: this.settings.modal,
-      guides: this.settings.guides,
-      center: this.settings.center,
-      highlight: this.settings.highlight,
-      background: this.settings.background,
-      autoCrop: this.settings.autoCrop,
-      autoCropArea: this.settings.autoCropArea,
-      movable: this.settings.movable,
-      rotatable: this.settings.rotatable,
-      scalable: this.settings.scalable,
-      zoomable: this.settings.zoomable,
-      zoomOnTouch: this.settings.zoomOnTouch,
-      zoomOnWheel: this.settings.zoomOnWheel,
-      wheelZoomRatio: this.settings.wheelZoomRatio,
-      cropBoxMovable: this.settings.cropBoxMovable,
-      cropBoxResizable: this.settings.cropBoxResizable,
-      toggleDragModeOnDblclick: this.settings.toggleDragModeOnDblclick,
-      minContainerWidth: this.settings.minContainerWidth,
-      minContainerHeight: this.settings.minContainerHeight,
-      minCanvasWidth: this.settings.minCanvasWidth,
-      minCanvasHeight: this.settings.minCanvasHeight,
-      minCropBoxWidth: this.settings.minCropBoxWidth,
-      minCropBoxHeight: this.settings.minCropBoxHeight,
-      ready() {
-        _this.dispatchEvent(
-          new CustomEvent("cropper-ready", {
-            detail: {},
-          })
+    async firstUpdated(changedProperties) {
+        this.imageContainer = this.shadowRoot.getElementById("img-container");
+        this.currentImage = this.shadowRoot.getElementById("image");
+
+        const settings = await this.validateSettings();
+        this.settings = settings;
+
+        this.initializeCropper();
+    }
+
+    validateSettings() {
+        return new Promise((resolve, reject) => {
+            let parsed;
+            try {
+                const json = JSON.parse(this.cropperSettings);
+                parsed = json;
+            } catch (error) {
+                console.error(error);
+                reject("JSON parse failed.");
+            }
+
+            if (parsed.initialAspectRatio === 0) {
+                parsed.initialAspectRatio = NaN;
+            }
+            if (parsed.aspectRatio === 0) {
+                parsed.aspectRatio = NaN;
+            }
+
+            resolve(parsed);
+        });
+    }
+
+    initializeCropper() {
+        if (this.settings.roundCropBox === true) {
+            this.imageContainer.classList.add("roundCropBox");
+        }
+
+        this.currentImage.src = `data:${this.mimeType};base64,` + this.imgSrc;
+
+        let _this = this;
+        this.cropper = new Cropper(this.currentImage, {
+            viewMode: this.settings.viewMode,
+            dragMode: this.settings.dragMode,
+            initialAspectRatio: this.settings.initialAspectRatio,
+            aspectRatio: this.settings.aspectRatio,
+            responsive: this.settings.responsive,
+            restore: this.settings.restore,
+            checkCrossOrigin: this.settings.checkCrossOrigin,
+            checkOrientation: this.settings.checkOrientation,
+            modal: this.settings.modal,
+            guides: this.settings.guides,
+            center: this.settings.center,
+            highlight: this.settings.highlight,
+            background: this.settings.background,
+            autoCrop: this.settings.autoCrop,
+            autoCropArea: this.settings.autoCropArea,
+            movable: this.settings.movable,
+            rotatable: this.settings.rotatable,
+            scalable: this.settings.scalable,
+            zoomable: this.settings.zoomable,
+            zoomOnTouch: this.settings.zoomOnTouch,
+            zoomOnWheel: this.settings.zoomOnWheel,
+            wheelZoomRatio: this.settings.wheelZoomRatio,
+            cropBoxMovable: this.settings.cropBoxMovable,
+            cropBoxResizable: this.settings.cropBoxResizable,
+            toggleDragModeOnDblclick: this.settings.toggleDragModeOnDblclick,
+            minContainerWidth: this.settings.minContainerWidth,
+            minContainerHeight: this.settings.minContainerHeight,
+            minCanvasWidth: this.settings.minCanvasWidth,
+            minCanvasHeight: this.settings.minCanvasHeight,
+            minCropBoxWidth: this.settings.minCropBoxWidth,
+            minCropBoxHeight: this.settings.minCropBoxHeight,
+            ready() {
+                _this.dispatchEvent(
+                    new CustomEvent("cropper-ready", {
+                        detail: {},
+                    })
+                );
+                _this.imageEncode();
+            },
+            cropend(event) {
+                _this.imageEncode(this.cropper.getData());
+            },
+        });
+    }
+
+    imageEncode(data) {
+        let croppedImageUri;
+        if (this.settings.roundCropBox === true) {
+            const roundedCanvas = this._getRoundedCanvas(
+                this.cropper.getCroppedCanvas({
+                    height: this.settings.croppedImageHeight,
+                    width: this.settings.croppedImageWidth,
+                })
+            );
+            croppedImageUri = roundedCanvas.toDataURL(
+                "image/png",
+                this.encoderQuality
+            );
+        } else {
+            croppedImageUri = this.cropper
+                .getCroppedCanvas({
+                    height: this.settings.croppedImageHeight,
+                    width: this.settings.croppedImageWidth,
+                })
+                .toDataURL(this.mimeType, this.encoderQuality);
+        }
+        let data1 = JSON.stringify(data);
+        console.log(data1)
+        this.dispatchEvent(
+            new CustomEvent("cropper-image-encode", {
+                detail: {
+                    imageUri: croppedImageUri,
+                    mimeType: this.mimeType,
+                    encoderQuality: this.encoderQuality,
+                    data: data1,
+                },
+            })
         );
-        _this.imageEncode();
-      },
-      cropend() {
-        _this.imageEncode();
-      },
-    });
-  }
-
-  imageEncode() {
-    let croppedImageUri;
-    if (this.settings.roundCropBox === true) {
-      const roundedCanvas = this._getRoundedCanvas(
-        this.cropper.getCroppedCanvas({
-          height: this.settings.croppedImageHeight,
-          width: this.settings.croppedImageWidth,
-        })
-      );
-      croppedImageUri = roundedCanvas.toDataURL(
-        "image/png",
-        this.encoderQuality
-      );
-    } else {
-      croppedImageUri = this.cropper
-        .getCroppedCanvas({
-          height: this.settings.croppedImageHeight,
-          width: this.settings.croppedImageWidth,
-        })
-        .toDataURL(this.mimeType, this.encoderQuality);
     }
-    this.dispatchEvent(
-      new CustomEvent("cropper-image-encode", {
-        detail: {
-          imageUri: croppedImageUri,
-          mimeType: this.mimeType,
-          encoderQuality: this.encoderQuality,
-        },
-      })
-    );
-  }
 
-  _getRoundedCanvas(sourceCanvas) {
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    var width = sourceCanvas.width;
-    var height = sourceCanvas.height;
+    _getRoundedCanvas(sourceCanvas) {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var width = sourceCanvas.width;
+        var height = sourceCanvas.height;
 
-    canvas.width = width;
-    canvas.height = height;
-    context.imageSmoothingEnabled = true;
-    context.drawImage(sourceCanvas, 0, 0, width, height);
-    context.globalCompositeOperation = "destination-in";
-    context.beginPath();
-    context.arc(
-      width / 2,
-      height / 2,
-      Math.min(width, height) / 2,
-      0,
-      2 * Math.PI,
-      true
-    );
-    context.fill();
-    return canvas;
-  }
+        canvas.width = width;
+        canvas.height = height;
+        context.imageSmoothingEnabled = true;
+        context.drawImage(sourceCanvas, 0, 0, width, height);
+        context.globalCompositeOperation = "destination-in";
+        context.beginPath();
+        context.arc(
+            width / 2,
+            height / 2,
+            Math.min(width, height) / 2,
+            0,
+            2 * Math.PI,
+            true
+        );
+        context.fill();
+        return canvas;
+    }
 
-  enable() {
-    this.cropper.enable();
-  }
+    enable() {
+        this.cropper.enable();
+    }
 
-  disable() {
-    this.cropper.disable();
-  }
+    disable() {
+        this.cropper.disable();
+    }
 }
 
 customElements.define("lit-cropper", LitCropper);
