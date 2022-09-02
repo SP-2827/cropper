@@ -2,14 +2,12 @@ package de.f0rce.cropper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.shared.Registration;
 import de.f0rce.cropper.events.CropperImageEncodeEvent;
+import de.f0rce.cropper.events.CropperMoveEvent;
 import de.f0rce.cropper.events.CropperReadyEvent;
 import de.f0rce.cropper.settings.CropperSettings;
 
@@ -153,5 +151,8 @@ public class Cropper extends Component implements HasSize {
 
     public JsonNode getDataNode() {
         return dataNode;
+    }
+    public Registration cropperMoveEventListener(final ComponentEventListener<CropperMoveEvent> listener) {
+        return this.addListener(CropperMoveEvent.class, listener);
     }
 }

@@ -447,8 +447,18 @@ class LitCropper extends LitElement {
             cropend(event) {
                 _this.imageEncode(this.cropper.getData());
             },
+            cropmove(){
+                let data2 = JSON.stringify(this.cropper.getData());
+               _this.dispatchEvent(
+                                  new CustomEvent("cropper-move", {
+                                      detail: data2,
+                                  })
+                              );
+            },
         });
+
     }
+
 
     imageEncode(data) {
         let croppedImageUri;
