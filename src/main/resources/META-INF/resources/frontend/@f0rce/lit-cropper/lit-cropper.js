@@ -451,7 +451,9 @@ class LitCropper extends LitElement {
                 let data2 = JSON.stringify(this.cropper.getData());
                _this.dispatchEvent(
                                   new CustomEvent("cropper-move", {
-                                      detail: data2,
+                                          detail: {
+                   data: data2,
+                                      },
                                   })
                               );
             },

@@ -12,7 +12,7 @@ public class CropperImageEncodeEvent extends ComponentEvent<Cropper> {
     private String mimeType;
     private double encoderQuality;
 
-    private String data;
+    private final String data;
 
     public CropperImageEncodeEvent(
             Cropper source,
